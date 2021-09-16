@@ -3,9 +3,14 @@ package decoder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import decoder.dto.JwtHeaderDTO;
 import decoder.dto.JwtSignatureDTO;
+import factory.SignatureAlgorithmFactory;
+import jwt.JwtHeader;
+import jwt.JwtPayload;
 import lombok.Getter;
 import util.Base64Decoder;
 import util.ObjectMapperWrapper;
+
+import java.nio.charset.StandardCharsets;
 
 @Getter
 public class JwtDecoder<T> {
@@ -40,7 +45,23 @@ public class JwtDecoder<T> {
     public static <N> N getPayloadFromToken(String token, Class<N> tClass) {
         var parts = separateIntoParts(token);
         var payloadJson = Base64Decoder.decode(parts[1]);
-        return ObjectMapperWrapper.readValue(payloadJson, tClass);
+        var payload = ObjectMapperWrapper.readValue(payloadJson, tClass);
+        if(isSigned(parts, payload)){
+            return payload;
+        } else {
+            throw new IllegalArgumentException("The payload is not verified/signed");
+        }
+    }
+
+    private static <N> boolean isSigned(String[] parts, N payload) {
+        var json = Base64Decoder.decode(parts[0]);
+        var headerDTO = ObjectMapperWrapper.readValue(json, JwtHeaderDTO.class);
+        var jwtHeader = new JwtHeader(headerDTO.getAlgorithm());
+        var jwtPayload = new JwtPayload<>(payload);
+        var algorithm = jwtHeader.getAlgorithm();
+        var algo = SignatureAlgorithmFactory.getAlgorithm(algorithm);
+        var encoded = algo.encode(jwtHeader, jwtPayload).toString();
+        return parts[2].equals(encoded);
     }
 
     private JwtSignatureDTO toSignature(String base64Header) {
@@ -50,7 +71,8 @@ public class JwtDecoder<T> {
 
     private <T> T toPayload(String base64Payload) {
         var json = Base64Decoder.decode(base64Payload);
-        var typeReference = new TypeReference<T>() {};
+        var typeReference = new TypeReference<T>() {
+        };
         return ObjectMapperWrapper.readValue(json, typeReference); // TODO adjust it
     }
 

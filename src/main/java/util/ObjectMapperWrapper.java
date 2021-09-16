@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 public class ObjectMapperWrapper {
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -24,10 +27,14 @@ public class ObjectMapperWrapper {
     }
 
     public static <T> T readValue(String text, Class<T> tClass){
+        return readValue(text.getBytes(StandardCharsets.UTF_8), tClass);
+    }
+
+    public static <T> T readValue(byte[] bytes, Class<T> tClass){
         try {
-            return mapper.readValue(text, tClass);
-        } catch (JsonProcessingException e) {
-            System.out.println("An error occurred when trying to read "+text);
+            return mapper.readValue(bytes, tClass);
+        } catch (IOException e) {
+            System.out.println("An error occurred when trying to read "+new String(bytes));
             return null;
         }
     }

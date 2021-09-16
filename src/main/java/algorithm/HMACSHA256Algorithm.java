@@ -20,7 +20,6 @@ public class HMACSHA256Algorithm extends SignatureAlgorithm {
     @Override
     public Base64String encode(JwtHeader header, JwtPayload<?> payload) {
         try {
-
             var mac = Mac.getInstance(algorithm.getInstanceName());
             var message = String.format("%s.%s",
                     header.getBase64(),
@@ -29,7 +28,6 @@ public class HMACSHA256Algorithm extends SignatureAlgorithm {
             mac.init(key);
             var result = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
             return new Base64String(result);
-
         } catch (Exception e) {
             System.out.printf("An error occurred"); //Log it
             return new Base64String("");
