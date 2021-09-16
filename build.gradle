@@ -10,8 +10,6 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = '11'
-
 dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
