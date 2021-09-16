@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jwt.JwtTokenFactoryTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-16T02:35:42" hostname="Lucas" time="0.189">
+  <properties/>
+  <testcase name="whenJwt_User_mustReturnValidJWT()" classname="jwt.JwtTokenFactoryTest" time="0.189"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
