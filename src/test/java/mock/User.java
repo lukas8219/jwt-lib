@@ -5,10 +5,14 @@ import java.util.Objects;
 public class User {
 
     private String username;
-    private String id;
+    private Long id;
 
-    public User(String username, String id){
+    public User(String username, Long id){
         this.username = username;
+        this.id = id;
+    }
+
+    public User(Long id){
         this.id = id;
     }
 
@@ -23,11 +27,11 @@ public class User {
         this.username = username;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

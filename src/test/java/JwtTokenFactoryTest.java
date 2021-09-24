@@ -7,7 +7,7 @@ public class JwtTokenFactoryTest {
 
     @Test
     public void whenJwt_User_mustReturnValidJWT() {
-        var user = new User("lucas", "123");
+        var user = new User("lucas", 123L);
         var subject = JwtToken.generateToken(user);
         var decoded = JwtToken.decodeToken(subject, User.class);
         Assertions.assertEquals(user, decoded);
@@ -21,4 +21,12 @@ public class JwtTokenFactoryTest {
         Assertions.assertEquals(payload, decoded);
     }
 
+    @Test
+    public void generateJwt(){
+        var user = new User(13L);
+        var subject = JwtToken.generateToken(user);
+        System.out.println(subject);
+        var decoded = JwtToken.decodeToken(subject, User.class);
+        Assertions.assertEquals(user, decoded);
+    }
 }
