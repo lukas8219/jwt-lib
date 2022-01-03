@@ -1,5 +1,6 @@
 package com.lukas8219.jwt.data.jwt;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.lukas8219.jwt.util.Base64String;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import com.lukas8219.jwt.util.JsonMapper;
 
 @Getter
+@JsonPropertyOrder(alphabetic = true)
 public class JwtHeader {
 
     @JsonProperty("alg")
