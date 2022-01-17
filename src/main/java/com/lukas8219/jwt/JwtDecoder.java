@@ -13,9 +13,9 @@ class JwtDecoder {
     private JwtDecoder() {
     }
 
-    public static <N> N getPayloadFromToken(String token, Class<N> tClass) {
+    public static <N> N getPayloadFromToken(String token, Class<N> tClass, String secret) {
         var parts = separateIntoParts(token);
-        if (isSigned(parts)) {
+        if (isSigned(parts, secret)) {
             var payloadJson = Base64Decoder.decode(parts[1]);
             return JsonMapper.readValue(payloadJson, tClass);
         } else {
@@ -38,11 +38,11 @@ class JwtDecoder {
         return parts;
     }
 
-    private static <N> boolean isSigned(String[] parts) {
+    private static <N> boolean isSigned(String[] parts, String secret) {
         var headerDTO = getJwtHeader(parts[0]);
         var headerBase = Base64String.of(parts[0]);
         var payloadBase = Base64String.of(parts[1]);
-        var algo = SignatureAlgorithmFactory.getAlgorithm(headerDTO.getAlgorithm());
+        var algo = SignatureAlgorithmFactory.of(secret).getAlgorithm(headerDTO.getAlgorithm());
         var encoded = algo.encode(headerBase, payloadBase).toString();
         return parts[2].equals(encoded);
     }

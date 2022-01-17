@@ -9,9 +9,9 @@ public class JwtSignature {
 
     private Base64String base64;
 
-    public JwtSignature(JwtHeader header, JwtPayload<?> payload) {
+    public JwtSignature(JwtHeader header, JwtPayload<?> payload, String secret) {
         var algo = header.getAlgorithm();
-        var algorithm = SignatureAlgorithmFactory.getAlgorithm(algo);
+        var algorithm = SignatureAlgorithmFactory.of(secret).getAlgorithm(algo);
         base64 = algorithm.encode(header.getBase64(), payload.getBase64());
     }
 

@@ -11,6 +11,14 @@ class HMACSHA256Algorithm extends AbstractSignatureAlgorithm {
 
     private final AlgorithmEnum algorithm = AlgorithmEnum.HS256;
 
+    public HMACSHA256Algorithm(byte[] secret) {
+        super(secret);
+    }
+
+    public HMACSHA256Algorithm(String secret) {
+        super(secret);
+    }
+
     @Override
     public Base64String encode(Base64String base64Header, Base64String base64Payload) {
         try {
