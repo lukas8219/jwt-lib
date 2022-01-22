@@ -4,11 +4,21 @@ import com.lukas8219.jwt.util.Base64String;
 
 import java.nio.charset.StandardCharsets;
 
-abstract class AbstractSignatureAlgorithm implements SignatureAlgorithm{
+abstract class AbstractSignatureAlgorithm implements SignatureAlgorithm {
+
+    private final byte[] secret;
+
+    public AbstractSignatureAlgorithm(byte[] secret) {
+        this.secret = secret;
+    }
+
+    public AbstractSignatureAlgorithm(String secret) {
+        this.secret = secret.getBytes(StandardCharsets.UTF_8);
+    }
 
     @Override
     public byte[] getSecret() {
-        return "80868c4abab7503b39176fbb475164402f17ce2adbf5e36a44f92a5285d3934a".getBytes(StandardCharsets.UTF_8);
+        return secret;
     }
 
     public abstract Base64String encode(Base64String base64Header, Base64String base64Payload);
