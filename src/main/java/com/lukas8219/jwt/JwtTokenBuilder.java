@@ -13,10 +13,9 @@ public class JwtTokenBuilder {
     private Map<String, String> claims;
     private AlgorithmEnum algorithmEnum = AlgorithmEnum.HS256;
 
-    private JwtTokenBuilder() {
-    }
+    private JwtTokenBuilder(){}
 
-    public static JwtTokenBuilder newBuilder(){
+    public static  JwtTokenBuilder newBuilder() {
         return new JwtTokenBuilder();
     }
 
@@ -46,6 +45,18 @@ public class JwtTokenBuilder {
     public JwtTokenBuilder withAlgorithm(AlgorithmEnum algorithm) {
         this.algorithmEnum = algorithm;
         return this;
+    }
+
+    public <T> JwtDecoder<T> buildDecoder(Class<T> clazz) {
+        if (payload == null) {
+            throw new RuntimeException("Payload cannot be Null");
+        }
+
+        if (secret == null) {
+            throw new RuntimeException("Secret cannot be null");
+        }
+
+        return new JwtDecoder<T>(clazz, secret);
     }
 
     public String build() {

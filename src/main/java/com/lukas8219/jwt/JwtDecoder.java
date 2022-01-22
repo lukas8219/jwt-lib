@@ -6,24 +6,27 @@ import com.lukas8219.jwt.algorithm.SignatureAlgorithmFactory;
 import lombok.Getter;
 import com.lukas8219.jwt.util.Base64Decoder;
 import com.lukas8219.jwt.util.JsonMapper;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-class JwtDecoder {
+@RequiredArgsConstructor
+class JwtDecoder<T> {
 
-    private JwtDecoder() {
-    }
+    private final Class<T> clazz;
+    private final String secret;
 
-    public static <N> N getPayloadFromToken(String token, Class<N> tClass, String secret) {
+
+    public T getPayloadFromToken(String token) {
         var parts = separateIntoParts(token);
         if (isSigned(parts, secret)) {
             var payloadJson = Base64Decoder.decode(parts[1]);
-            return JsonMapper.readValue(payloadJson, tClass);
+            return JsonMapper.readValue(payloadJson, clazz);
         } else {
             throw new IllegalArgumentException("The payload is not verified/signed");
         }
     }
 
-    private static String[] separateIntoParts(String token) {
+    private String[] separateIntoParts(String token) {
         if (token == null) {
             throw new NullPointerException("Token cannot be null");
         }
@@ -38,7 +41,7 @@ class JwtDecoder {
         return parts;
     }
 
-    private static <N> boolean isSigned(String[] parts, String secret) {
+    private boolean isSigned(String[] parts, String secret) {
         var headerDTO = getJwtHeader(parts[0]);
         var headerBase = Base64String.of(parts[0]);
         var payloadBase = Base64String.of(parts[1]);
@@ -47,7 +50,7 @@ class JwtDecoder {
         return parts[2].equals(encoded);
     }
 
-    private static JwtHeaderDTO getJwtHeader(String part) {
+    private JwtHeaderDTO getJwtHeader(String part) {
         var json = Base64Decoder.decode(part);
         return JsonMapper.readValue(json, JwtHeaderDTO.class);
     }
